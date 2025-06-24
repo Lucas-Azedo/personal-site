@@ -1,6 +1,6 @@
 package com.lucasazedo.Model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +15,20 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
 
+    @Id
+    @GeneratedValue(strategy =  GenerationType.UUID)
     UUID id;
-    String name;
+
+    @Column(unique = true)
     String email;
+
+    @Column(unique = true)
     String cpf;
+
+    @Column(unique = true)
     String cnpj;
+
+    String name;
     String password;
 
 }

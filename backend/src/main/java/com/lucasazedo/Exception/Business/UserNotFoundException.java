@@ -2,8 +2,8 @@ package com.lucasazedo.Exception.Business;
 
 import com.lucasazedo.Exception.BusinessException;
 
-public class InvalidInput extends BusinessException {
-    public InvalidInput(String message) {
+public class UserNotFoundException extends BusinessException {
+    public UserNotFoundException(String message) {
         super(message);
     }
 }
