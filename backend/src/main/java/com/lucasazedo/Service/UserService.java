@@ -9,11 +9,15 @@ import com.lucasazedo.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -36,11 +40,32 @@ public class UserService {
         return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
     }
 
+
+    @Transactional(readOnly = true)
+    public UserResponseDTO getUserById(UUID id){
+        User user = getUserEntityById(id);
+
+        return new UserResponseDTO(user.getId(), user.getName(), user.getEmail());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> getAllUsers(){
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
     public void deleteUser(UUID id){
-        User user = userRepository.findById(id)
-                        .orElseThrow(() -> new UserNotFoundException("Usuário nao encontrado"));
+        User user = getUserEntityById(id);
 
         userRepository.delete(user);
+    }
+
+    //Utils
+    @Transactional(readOnly = true)
+    private User getUserEntityById(UUID id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuário nao encontrado"));
     }
 
     private void validateCpfCnpj(UserSignUpRequestDTO dto) {
